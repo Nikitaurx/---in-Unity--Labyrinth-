@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class BulletMove : MonoBehaviour
 {
+    GameObject _player;
     [SerializeField] public Vector3 targetPosition;
 
     public float moveTimeSpeed;
@@ -16,7 +17,14 @@ public class BulletMove : MonoBehaviour
 
     }
 
-
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject == _player)
+        {
+            print("You fell in the maze, like many others.");
+            Destroy(_player);
+        }
+    }
     void Update()
     {
         t += Time.deltaTime;
@@ -26,5 +34,9 @@ public class BulletMove : MonoBehaviour
             transform.position = targetPosition;
             t = 0;
         }
+    }
+    void Awake()
+    {
+        _player = GameObject.FindGameObjectWithTag("Player");
     }
 }
