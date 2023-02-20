@@ -1,20 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class SpeedBonus : MonoBehaviour
+public class SpeedBonus : MovingBall
 {
     void Update()
     {
-        transform.Rotate(0, 0.6f, 0);
-    }
-    public void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Player")
+        try
         {
-            other.GetComponent<MovingBall>().SpeedBonus();
-            Destroy(gameObject);
-            Debug.Log("Вы получили ускорение");
+            //if (_speedBonus != null)
+            _SpeedBonus.transform.Rotate(0, 0.6f, 0);
+            // Бонус подобран и уничтожен, но Rotate пытается повернуть его
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
         }
     }
+
 }

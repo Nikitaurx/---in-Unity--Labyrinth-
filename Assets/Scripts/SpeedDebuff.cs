@@ -1,20 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class SpeedDebuff : MonoBehaviour
+public class SpeedDebuff : MovingBall
 {
     void Update()
     {
-        transform.Rotate(0, 0.6f, 0);
-    }
-    public void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Player")
+        try
         {
-            other.GetComponent<MovingBall>().SpeedDebuff();
-            Destroy(gameObject);
-            Debug.Log("Вы получили замедление");
+            //if (_speedDebuff != null)
+            _SpeedDebuff.transform.Rotate(0, 0.6f, 0);
+            // Бонус подобран и уничтожен, но Rotate пытается повернуть его
         }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+        }
+
     }
+
+    static void CheckSpeedDebuff()
+    {
+
+    }
+
 }

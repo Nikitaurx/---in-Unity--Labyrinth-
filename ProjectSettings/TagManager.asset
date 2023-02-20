@@ -7,6 +7,8 @@ TagManager:
   - Gate
   - TeleCubeFinish
   - TeleCubeFake
+  - Speed_Bonus
+  - Speed_Debuff
   layers:
   - Default
   - TransparentFX
