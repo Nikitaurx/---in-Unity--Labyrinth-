@@ -20,9 +20,4 @@ public class SpeedDebuff : MovingBall
 
     }
 
-    static void CheckSpeedDebuff()
-    {
-
-    }
-
 }

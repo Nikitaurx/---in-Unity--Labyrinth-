@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 public class MovingBall : MonoBehaviour//, ICheckSpeed;
 {
     // public delegate void CheckBonusDelegate();
     // private CheckBonusDelegate _checkBonus;
-
     private event Action<EventArgs> _event1;
     private event Action<EventArgs> _event2;
 
@@ -16,15 +16,26 @@ public class MovingBall : MonoBehaviour//, ICheckSpeed;
     private float currentSpeed;
     public float speedBonus;
     public float speedDebuff;
+    public float timerSpeedBonus;
+    public float timerSpeedDebuff;
+    [SerializeField] private float timerSpeedMax;
     private Vector2 velocity;
-    float timerSpeedBonus;
-    float timerSpeedDebuff;
-    [SerializeField] float timerSpeedMax;
 
 
     public GameObject _Player;
     public GameObject _SpeedBonus;
     public GameObject _SpeedDebuff;
+    private Reference _reference;
+
+
+    private void Awake()
+    {
+        _Player = GameObject.FindGameObjectWithTag("Player");
+        _SpeedBonus = GameObject.FindGameObjectWithTag("Speed_Bonus");
+        _SpeedDebuff = GameObject.FindGameObjectWithTag("Speed_Debuff");
+
+        _reference = new Reference();
+    }
 
     void Start()
     {
@@ -32,31 +43,24 @@ public class MovingBall : MonoBehaviour//, ICheckSpeed;
         // _checkBonus += CheckSpeedDebuff;
         _event1 += ChangeColorBonus;
         _event2 += ChangeColorDebuff;
+        //_reference.FinishScreen.gameObject.SetActive(true);
+        //var endScreen = Resources.Load<GameObject>("UI/FinishScreen");
     }
 
     void Update()
     {
-        //_checkBonus?.Invoke();
-        // CheckSpeedBonus();
-        // CheckSpeedDebuff();
         if (timerSpeedBonus > 0)
         {
-            _event1?.Invoke(new EventArgs());
-            Debug.Log("Вы получили ускорение");
-            currentSpeed = speedBonus;
-            timerSpeedBonus--;
+            timerSpeedBonus = CheckSpeed(_event1, speedBonus, timerSpeedBonus);
         }
         else if (timerSpeedDebuff > 0)
         {
-            _event2?.Invoke(new EventArgs());
-            Debug.Log("Вы получили замедление");
-            currentSpeed = speedDebuff;
-            timerSpeedDebuff--;
+            timerSpeedDebuff = CheckSpeed(_event2, speedDebuff, timerSpeedDebuff);
         }
         else
         {
-            currentSpeed = basementSpeed;
             _Player.GetComponent<Renderer>().material.color = new Color(0, 0, 0);
+            currentSpeed = basementSpeed;
         }
 
         velocity.x = Input.GetAxis("Horizontal") * currentSpeed * Time.deltaTime;
@@ -64,69 +68,55 @@ public class MovingBall : MonoBehaviour//, ICheckSpeed;
 
         transform.Translate(velocity.x, 0f, velocity.y);
     }
+
     public void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Speed_Bonus")
         {
-            timerSpeedBonus = TimerBonus(_SpeedBonus, timerSpeedBonus);
+            timerSpeedBonus = TimerBonus(other.gameObject, timerSpeedBonus);
+            //Destroy(other.gameObject);
             Debug.Log("Вы получили ускорение");
         }
-
         if (other.gameObject.tag == "Speed_Debuff")
         {
-            timerSpeedDebuff = TimerBonus(_SpeedDebuff, timerSpeedDebuff);
+            timerSpeedDebuff = TimerBonus(other.gameObject, timerSpeedDebuff);
+            //Destroy(other.gameObject);
             Debug.Log("Вы получили замедление");
         }
+        if (other.gameObject.tag == "Finish")
+        {
+            print("You succesfully finished the maze. Congratulations!");
+            _reference.FinishScreen.gameObject.SetActive(true);
+
+        }
+        if (other.gameObject.tag == "Bullet")
+        {
+            _reference.LoseScreen.gameObject.SetActive(true);
+        }
     }
-    public float TimerBonus(GameObject _bonusObj, float _timer)
+    public float TimerBonus(GameObject _bonusObj, float _timer)//GameObject _bonusObj, float _timer)
     {
         _timer = timerSpeedMax;
         Destroy(_bonusObj.gameObject);
         return _timer;
     }
+
     void ChangeColorBonus(EventArgs obj)
     {
-        _Player.GetComponent<Renderer>().material.color = new Color(0, 100, 100);
+        _Player.GetComponent<Renderer>().material.color = new Color(50, 50, 0);
     }
     void ChangeColorDebuff(EventArgs obj)
     {
-        _Player.GetComponent<Renderer>().material.color = new Color(0, 0, 100);
+        _Player.GetComponent<Renderer>().material.color = new Color(0, 0, 50);
     }
-    void CheckSpeedBonus()
+
+    public float CheckSpeed(Action<EventArgs> action, float speed, float timerSpeed)
     {
-        if (timerSpeedBonus > 0)
-        {
-            _event1?.Invoke(new EventArgs());
-            Debug.Log("Вы ускоренны");
-            currentSpeed = speedBonus;
-            timerSpeedBonus--;
-        }
-        else
-        {
-            currentSpeed = basementSpeed;
-            _Player.GetComponent<Renderer>().material.color = new Color(10, 10, 10);
-        }
-    }
-    void CheckSpeedDebuff()
-    {
-        if (timerSpeedDebuff > 0)
-        {
-            _event2?.Invoke(new EventArgs());
-            Debug.Log("Вы замедленны");
-            currentSpeed = speedDebuff;
-            timerSpeedDebuff--;
-        }
-        else
-        {
-            currentSpeed = basementSpeed;
-            _Player.GetComponent<Renderer>().material.color = new Color(10, 10, 10);
-        }
-    }
-    void Awake()
-    {
-        _Player = GameObject.FindGameObjectWithTag("Player");
-        _SpeedBonus = GameObject.FindGameObjectWithTag("Speed_Bonus");
-        _SpeedDebuff = GameObject.FindGameObjectWithTag("Speed_Debuff");
+        action?.Invoke(new EventArgs());
+        Debug.Log("Вы ускоренны");
+        currentSpeed = speed;
+        timerSpeed--;
+        return timerSpeed;
     }
 
 }

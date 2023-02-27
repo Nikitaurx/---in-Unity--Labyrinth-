@@ -9,6 +9,7 @@ TagManager:
   - TeleCubeFake
   - Speed_Bonus
   - Speed_Debuff
+  - Bullet
   layers:
   - Default
   - TransparentFX
