@@ -113,7 +113,7 @@ public class MovingBall : MonoBehaviour//, ICheckSpeed;
     public float CheckSpeed(Action<EventArgs> action, float speed, float timerSpeed)
     {
         action?.Invoke(new EventArgs());
-        Debug.Log("Вы ускоренны");
+        Debug.Log("Время изменения скорости");
         currentSpeed = speed;
         timerSpeed--;
         return timerSpeed;
