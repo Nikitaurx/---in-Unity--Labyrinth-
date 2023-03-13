@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ChangeObj : MonoBehaviour
 {
+
     public GameObject obj;
     public float _radiusObj = 0;
     public Color color;
@@ -15,7 +16,12 @@ public class ChangeObj : MonoBehaviour
 
     private void Start()
     {
-        color = Color.grey;
+        //color = Color.grey;
+
+        Debug.Log(obj);
+    }
+    private void Update()
+    {
         ChangeColor();
         ChangeRadius();
     }
