@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class UIController : MonoBehaviour
+public class UIController : CountWin
 {
     public static bool isPaused = false;
     public GameObject pauseMenu;
+    //public CountWin _target;
     private Reference _reference;
     void Start()
     {
+        //_target = GetComponent<CountWin>();
         //Cursor.lockState = CursorLockMode.Locked;
     }
     void Awake()
@@ -65,6 +67,10 @@ public class UIController : MonoBehaviour
     }
     public void ExitButton()
     {
-        Application.Quit();
+
+        //_target.ResetData();
+        ResetData();
+
+        //Application.Quit();
     }
 }

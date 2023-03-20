@@ -7,11 +7,6 @@ public class ActivePlate : MonoBehaviour
     GameObject _player;
     GameObject _finalGate;
 
-    void Update()
-    {
-
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == _player)
